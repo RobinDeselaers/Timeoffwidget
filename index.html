@@ -6,7 +6,9 @@
 <title>Absence Overview</title>
 
 <style>
-    * { box-sizing: border-box; }
+    * { 
+        box-sizing: border-box;
+    }
 
     body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -32,6 +34,7 @@
         font-size: 20px;
     }
 
+    /* Absence cards */
     .absence-card {
         padding: 16px;
         border-radius: 14px;
@@ -59,7 +62,7 @@
         text-align: right;
     }
 
-    /* New request button */
+    /* Request button */
     .new-btn {
         width: 100%;
         padding: 14px;
@@ -77,68 +80,64 @@
         background: #00468a;
     }
 
-    /* Floating add button */
-    .fab {
-        width: 56px;
-        height: 56px;
-        background: #4caf50;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 32px;
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        cursor: pointer;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-        z-index: 999;
-    }
 
-    /* Modal */
+    /* ============================
+       UPDATED COMPACT MODAL 
+       ============================ */
     .modal {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0,0,0,0.45);
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 0;
+        z-index: 9999;
     }
 
     .modal-content {
         background: white;
-        padding: 20px;
-        width: 100%;
-        max-width: 360px;
-        border-radius: 14px;
+        width: 90%;
+        max-width: 350px;
+        max-height: 75vh;        
+        overflow-y: auto;        
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h3 {
+        font-size: 18px;
+        margin: 0 0 10px 0;
     }
 
     .close {
         float: right;
         cursor: pointer;
-        font-size: 22px;
+        font-size: 20px;
+        margin-top: -4px;
     }
 
-    .modal input, .modal select, .modal textarea {
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
         width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        margin-bottom: 16px;
-        font-size: 15px;
+        padding: 8px;
+        margin-top: 6px;
+        margin-bottom: 12px;
+        font-size: 14px;
         border-radius: 8px;
         border: 1px solid #ccc;
     }
 
     .submit-btn {
         width: 100%;
-        padding: 12px;
+        padding: 10px;
         border-radius: 8px;
         background: #005eb8;
         color: white;
         border: none;
-        font-size: 16px;
+        font-size: 15px;
         cursor: pointer;
     }
 
@@ -173,12 +172,14 @@
         <div class="absence-status">Pending</div>
     </div>
 
-    <!-- REQUEST NEW -->
+    <!-- REQUEST NEW ABSENCE -->
     <button class="new-btn" onclick="openAbsenceModal()">Request New Absence</button>
 
 </div>
 
-<!-- Modal -->
+<!-- ============================
+     MODAL FORM
+     ============================ -->
 <div id="absenceModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeAbsenceModal()">&times;</span>
@@ -201,11 +202,12 @@
         <input type="date" id="endDate">
 
         <label>Reason (optional)</label>
-        <textarea id="reason" placeholder="Add optional notes..." rows="3"></textarea>
+        <textarea id="reason" rows="2" placeholder="Add optional notes.."></textarea>
 
         <button class="submit-btn" onclick="sendAbsenceRequest()">Submit Absence Request</button>
     </div>
 </div>
+
 
 <script>
 function openAbsenceModal() {
@@ -217,16 +219,20 @@ function closeAbsenceModal() {
 }
 
 async function sendAbsenceRequest() {
+
     const type = document.getElementById("absenceType").value;
     const start = document.getElementById("startDate").value;
     const end   = document.getElementById("endDate").value;
-    const reason = document.getElementById("reason").value || "No additional notes";
+    const reason = document.getElementById("reason").value || "No additional notes.";
 
     const payload = {
         "accessorIds": [
-            "6914bfac955bde56d791c4ee"     // manager user id, unchanged
+            "6914bfac955bde56d791c4ee"  // MANAGER User ID
         ],
-        "channels": [ "notificationCenter", "push" ],
+        "channels": [
+            "notificationCenter",
+            "push"
+        ],
         "content": {
             "en_US": {
                 "text": `New Absence Request Submitted\nType: ${type}\nDates: ${start} → ${end}`
@@ -243,12 +249,14 @@ async function sendAbsenceRequest() {
             "en_US": {
                 "type": "image",
                 "href": "https://i.pinimg.com/474x/66/9b/d7/669bd7e734f2e0615d94fb1af77cc6aa.jpg",
-                "width": 600, "height": 400
+                "width": 600,
+                "height": 400
             },
             "de_DE": {
                 "type": "image",
                 "href": "https://i.pinimg.com/474x/66/9b/d7/669bd7e734f2e0615d94fb1af77cc6aa.jpg",
-                "width": 600, "height": 400
+                "width": 600,
+                "height": 400
             }
         },
         "link": "https://app.staffbase.com/content/page/6914e3ecd5cde774c74364f1"
